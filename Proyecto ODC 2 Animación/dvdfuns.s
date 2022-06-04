@@ -37,7 +37,18 @@
         add sp, sp, #8
         br lr
 	 
- 
+ DELAY:
+ 	sub sp, sp, #8 // Guardo el puntero de retorno en el stack
+      	stur lr, [sp]
+	movz x9, 0xff,lsl 16 
+	movk x9, 0xffff, lsl 00
+	loop:
+	subs x9, x9, 1
+	b.ne loop
+	ldur lr, [sp] // Recupero el puntero de retorno del stack
+        add sp, sp, #8
+        br lr
+
 
  	
  	
