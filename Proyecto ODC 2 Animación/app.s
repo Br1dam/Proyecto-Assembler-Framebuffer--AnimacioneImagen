@@ -1,10 +1,10 @@
 .equ SCREEN_WIDTH, 		640
 .equ SCREEN_HEIGH, 		480
 .equ BITS_PER_PIXEL,  	32
-.equ ancho,				50
-.equ alto,				60
-.equ pared_derecha, 	590 // SCREEN_WIDTH - ancho
-.equ piso, 				420 // SCREEN_HEIGH - alto
+.equ ancho,				100
+.equ alto,				80
+.equ pared_derecha, 	540 // SCREEN_WIDTH - ancho
+.equ piso, 				400 // SCREEN_HEIGH - alto
 
 .include "dvdfuns.s"
 
@@ -64,7 +64,7 @@ mov_y:
 	add x4, x4, x15
 	mov x10, x11
 	BL Pixeldir
-	BL dibujarcuadrado
+	BL dibujarlogo
 
 	mov x5, x3
 	mov x6, x4
