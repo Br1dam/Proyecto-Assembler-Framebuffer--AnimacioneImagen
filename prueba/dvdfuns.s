@@ -4,8 +4,10 @@
 .equ ancho,				100
 .equ alto,				80
 .equ pared_derecha, 	540 // SCREEN_WIDTH - ancho
-.equ piso, 				400 // SCREEN_HEIGH - alto
-.equ pared_derecha2, 560
+.equ piso, 		400 // SCREEN_HEIGH - alto
+.equ techo_triangulo, 80 // El triangulo empieza a armarse desde abajo
+.equ pared_derecha_triangulo, 560 // Ancho de triangulo = 160
+.equ pared_izquierda_triangulo, 80
 
  Pixeldir:
 	mov x0, 640			
@@ -213,28 +215,28 @@ triangulo:
 		
 	sub sp, sp, #8 // Guardo el puntero de retorno en el stack
       	stur lr, [sp]
-    	mov x7, x17	// pos.columna (x)
-	cmp x7, pared_derecha2 //  pos.x == pared derecha
+    	mov x3, x17	// pos.columna (x)
+	cmp x3, pared_derecha_triangulo //  pos.x == pared derecha
 	B.GE rebote_horizontal2
-	cmp x7, 0
+	cmp x3, pared_izquierda_triangulo
 	B.LE rebote_horizontal2
  
         mov_x2:
         
-	add x7, x7, x21
-	mov x8, x18	// pos.fila (y)
-	cmp x8, piso  // pos.y == piso
+	add x3, x3, x21
+	mov x4, x18	// pos.fila (y)
+	cmp x4, techo_triangulo  // pos.y == piso
 	B.GE rebote_vertical2
-	cmp x8, 0
+	cmp x4, 0
 	B.LE rebote_vertical2	
 	
 	mov_y2:
 	add x8, x8, x22
 	mov x25, x10
-	BL Pixeldir2
+	BL Pixeldir
 	BL dibujartriangulo
-	mov x17, x7
-	mov x18, x8
+	mov x17, x3
+	mov x18, x4
 	B endingt
 	
 	

@@ -15,12 +15,12 @@ main:
 	mov x14, 3	//vector movimiento en x
 	
 	mov x21, 3
-	mov x22, 3
+	mov x22, 3	// vector mov triangulo
 	
 	mov x5, 500	//pos.columna inicial
 	mov x6, 300	//pos.fila inicial
 	
-	mov x17, 400
+	mov x17, 400	// pos inicial triangulo
 	mov x18, 200
 	
 	movz x11, 0xff,lsl 16  
