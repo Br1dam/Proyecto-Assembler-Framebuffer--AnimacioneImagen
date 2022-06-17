@@ -5,7 +5,7 @@
 .equ alto,				60
 .equ pared_derecha, 	580 // SCREEN_WIDTH - ancho
 .equ piso, 				420 // SCREEN_HEIGH - alto
-.equ limite,          	500 
+.equ limite,          	100
 .equ blanco, 0xFFFFFF
 
 .include "dvdfuns.s"
@@ -28,7 +28,7 @@ main:
 	movz x18, 0x0a, lsl 16 // color fondo
 	movk x18, 0x2225, lsl 0 
 	
-	mov x19, limite	
+
 	
 	mov x22, -1	//vector movimiento en x
 	mov x23,300
@@ -62,7 +62,6 @@ escenamouse:
 	mov x24, x4
 	
 	BL DELAY
-	
 	b escena
 
 moverderizq:
@@ -71,9 +70,18 @@ moverderizq:
 	B quieto
 
 quieto:
-	BL DELAY
-	BL Pixeldir
-	Bl dibujarcursor
+
+	add x4, x4,5
+ 	mov x2, 7
+ 	BL Pixeldir
+	Bl dibujarreloj
+ 	mov x9, 0xfffffff
+	delay:
+	sub x9, x9, 1
+	cbnz x9, delay
+	
+
+	
 	
 		
 
@@ -148,9 +156,7 @@ mov_y:
 	/*Almaceno color actual */
 	mov x11, x10
 
-	sub x19, x19, 1
-	cmp x19, 0
-	B.EQ escena
+	
 	
 	BL DELAY
 	

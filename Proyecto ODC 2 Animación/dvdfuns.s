@@ -2,6 +2,7 @@
 .equ SCREEN_HEIGH, 		480
 .equ BITS_PER_PIXEL,  	32
 .equ blanco, 0xFFFFFF
+.equ negro, 0x000000
 
 
 /*
@@ -31,6 +32,8 @@ Pixeldir:
 	subs x9, x9, 3
 	b.GT loop
 ret
+
+ 
  
  dibujarcuadrado:  
  //x3= x, x4 = y, x1/x9=Ancho, x2/x8=Alto  w10 = color
@@ -273,6 +276,97 @@ dibujarcursor:
           add sp, sp, #8
           br lr
                   
+ dibujartriangulo: 
  
- 
+ 	sub sp, sp, #8 // Guardo el puntero de retorno en el stack
+      	stur lr, [sp]
 
+ 
+ 	
+ 	mov x8, x2
+ 	mov x5, 1
+ 	loopat:
+     	 mov x9, x5
+     	 mov x11, x0
+     	 
+     	coloreart:	
+	  stur w10,[x0]	   
+	  add x0,x0,4	   
+	  sub x9,x9,1	  
+	  cbnz x9,coloreart
+	  mov x0, x11   
+	  sub x8, x8, 1
+	  sub x0, x0, 2564
+	  add x5, x5, 2
+	  cbnz x8,loopat
+	
+ 	ldur lr, [sp] // Recupero el puntero de retorno del stack
+        add sp, sp, #8 
+
+        br lr
+ 
+ dibujartrianguloparte2: 
+ 
+ 	sub sp, sp, #8 // Guardo el puntero de retorno en el stack
+      	stur lr, [sp]
+
+ 
+ 	
+ 	mov x8, x2
+ 	mov x5, 1
+ 	loopat2:
+     	 mov x9, x5
+     	 mov x11, x0
+     	 
+     	coloreart2:	
+	  stur w10,[x0]	   
+	  add x0,x0,4	   
+	  sub x9,x9,1	  
+	  cbnz x9,coloreart2
+	  mov x0, x11   
+	  sub x8, x8, 1
+	  add x0, x0, 2556
+	  add x5, x5, 2
+	  cbnz x8,loopat2
+	
+ 	ldur lr, [sp] // Recupero el puntero de retorno del stack
+        add sp, sp, #8 
+
+        br lr
+        
+        
+dibujarreloj:
+	
+	sub sp, sp, #8 // Guardo el puntero de retorno en el stack
+      	stur lr, [sp]
+
+	mov x12, x0
+	bl dibujartriangulo
+	mov x0, x12
+	bl dibujartrianguloparte2
+	mov x1, 1
+	mov x2, 1
+	mov x0, x12
+	mov x10, negro
+	add x4, x4, 2
+	bl Pixeldir
+	bl dibujarcuadrado
+	add x4,x4, 2
+	bl Pixeldir
+	bl dibujarcuadrado
+	sub x4, x4, 6
+	add x3,x3, 1
+	bl Pixeldir
+	bl dibujarcuadrado
+	sub x3,x3, 2
+	bl Pixeldir
+	bl dibujarcuadrado
+	add x3, x3, 1
+	add x4, x4, 1
+	bl Pixeldir
+	bl dibujarcuadrado
+	ldur lr, [sp] // Recupero el puntero de retorno del stack
+        add sp, sp, #8 
+
+        br lr
+ 
