@@ -1,7 +1,8 @@
 .equ SCREEN_WIDTH, 		640
 .equ SCREEN_HEIGH, 		480
 .equ BITS_PER_PIXEL,  	32
-.equ limite,          	300 
+.equ blanco, 0xFFFFFF
+
 
 /*
 Funciones aqui:
@@ -122,95 +123,7 @@ end:
 		
 	ret
  
-NO_SIGNAL:
-	sub sp, sp, #8 // Guardo el puntero de retorno en el stack
-    stur lr, [sp]
 
-	mov x19, 200
-loop_signal:
-// COLUMNA BLANCO
-	movz x10, 0xFF,lsl 16  
-	movk x10, 0xFFFF, lsl 00
-	
-	mov x1, 80 // ancho de cada columna, SCREEN_WIDTH/cant de columnas
-	mov x2, SCREEN_HEIGH
-	mov x3, 0	// pos.columna
-	mov x4, 0	// pos.fila
-
-	BL Pixeldir
-	BL dibujarcuadrado
-// COLUMNA AMARILLO
-	movz x10, 0xf9,lsl 16  
-	movk x10, 0xFb00, lsl 00
-	
-	add x3, x3, 80  // pos.columna
-
-	BL Pixeldir
-	BL dibujarcuadrado
-
-// COLUMNA verde-azul
-	movz x10, 0x02,lsl 16  
-	movk x10, 0xfeff, lsl 00
-	
-	add x3, x3, 80	// pos.columna
-
-	BL Pixeldir
-	BL dibujarcuadrado
-
-// COLUMNA verde
-	movz x10, 0x01,lsl 16  
-	movk x10, 0xff00, lsl 00
-	
-	add x3, x3, 80	// pos.columna
-
-	BL Pixeldir
-	BL dibujarcuadrado
-
-// COLUMNA violeta
-	movz x10, 0xfd,lsl 16  
-	movk x10, 0x00fb, lsl 00
-	
-	add x3, x3, 80	// pos.columna
-
-	BL Pixeldir
-	BL dibujarcuadrado
-
-// COLUMNA violeta
-	movz x10, 0xfb,lsl 16  
-	movk x10, 0x0102, lsl 00
-	
-	add x3, x3, 80	// pos.columna
-
-	BL Pixeldir
-	BL dibujarcuadrado
-
-// COLUMNA azul
-	movz x10, 0x03,lsl 16  
-	movk x10, 0x01fc, lsl 00
-	
-	add x3, x3, 80	// pos.columna
-
-	BL Pixeldir
-	BL dibujarcuadrado
-
-// COLUMNA negro
-	movz x10, 0x00,lsl 16  
-	movk x10, 0x0000, lsl 00
-	
-	add x3, x3, 80	// pos.columna
-
-	BL Pixeldir
-	BL dibujarcuadrado
-
-	sub x19, x19, 1
-	cmp x19, 0
-	B.GT loop_signal
-
-	mov x19, limite
-	ldur lr, [sp] // Recupero el puntero de retorno del stack
-    add sp, sp, #8 
-
-    br lr
 
 
 
@@ -259,5 +172,107 @@ dibujarfondo:  //x3= x x4 = y x1/x9=Ancho x2/x8=Alto  w10 = color
 	ldur lr, [sp] // Recupero el puntero de retorno del stack
         add sp, sp, #8
         br lr
+
+
+ dibujarescritorio:        
+ 	sub sp, sp, #8 // Guardo el puntero de retorno en el stack
+      	stur lr, [sp]
+        movz x10, 0x3B,lsl 16 
+ 	movk x10, 0x3B90, lsl 00
+	mov x1, SCREEN_WIDTH
+	mov x2, 450
+	mov x3, 0	// pos.columna
+	mov x4, 0	// pos.fila
+	BL Pixeldir
+	BL dibujarcuadrado
+	mov x4, 450
+	mov x2, 30
+	movz x10, 0xC5,lsl 16  // Color de fondo : Negro
+	movk x10, 0xC5D5, lsl 00
+	BL Pixeldir
+	BL dibujarcuadrado
+	movz x10, 0xB3,lsl 16  // Color de fondo : Negro
+	movk x10, 0xB2B1, lsl 00
+	mov x4, 455
+	mov x3, 10
+	mov x1, 30
+	mov x2, 20
+	BL Pixeldir
+	BL dibujarcuadrado
+	movz x10, 0xBB,lsl 16  // Color de fondo : Negro
+	movk x10, 0x0000, lsl 00
+	add x4, x4, 2
+	add x3, x3, 7
+	mov x1, 16
+	mov x2, 16
+	BL Pixeldir
+	BL dibujarcuadrado
+   	ldur lr, [sp] // Recupero el puntero de retorno del stack
+        add sp, sp, #8
+        br lr
+
+
+ 
+dibujarlineadiagonal:  //x3= x x4 = y x1/x9=Ancho x2/x8=Alto  w10 = color
+ 
+ 	sub sp, sp, #8 // Guardo el puntero de retorno en el stack
+      	stur lr, [sp]
+ 
+ 	mov x12, x0
+ 	mov x8, x2
+ 	loopal:
+     	 mov x9, x1
+     	 mov x7, x12
+     	 
+     	colorearl:	
+	  stur w10,[x12]	   
+	  add x12,x12,4	   
+	  sub x9,x9,1	  
+	  cbnz x9,colorearl
+	  mov x12, x7  
+	  sub x8, x8, 1
+	  add x12, x12,2564
+	  cbnz x8,loopal
+	  
+	ldur lr, [sp] // Recupero el puntero de retorno del stack
+        add sp, sp, #8
+        br lr
+
+dibujarcursor:
+
+	sub sp, sp, #8 // Guardo el puntero de retorno en el stack
+      	stur lr, [sp]
+      	
+ 	mov x1, 11
+	mov x2, 11
+ 	mov x12, x0
+ 	mov x8, x2
+ 	mov x5, 1
+ 	loopatr:
+     	 mov x9, x5
+     	 mov x7, x12
+     	 
+     	coloreartr:	
+	  stur w10,[x12]	   
+	  add x12,x12,4	   
+	  sub x9,x9,1	  
+	  cbnz x9,coloreartr
+	  mov x12, x7  
+	  sub x8, x8, 1
+	  add x12, x12,2560
+	  add x5, x5, 1
+	  cbnz x8,loopatr
+	  
+	mov x0 ,x12
+	add x0, x0, 16
+	mov x1, 3
+	mov x2, 4
+	bl dibujarlineadiagonal
+	
+	  ldur lr, [sp] // Recupero el puntero de retorno del stack
+          add sp, sp, #8
+          br lr
+                  
+ 
  
 

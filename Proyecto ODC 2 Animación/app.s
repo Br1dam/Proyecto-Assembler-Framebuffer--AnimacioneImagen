@@ -5,6 +5,8 @@
 .equ alto,				60
 .equ pared_derecha, 	580 // SCREEN_WIDTH - ancho
 .equ piso, 				420 // SCREEN_HEIGH - alto
+.equ limite,          	500 
+.equ blanco, 0xFFFFFF
 
 .include "dvdfuns.s"
 
@@ -28,11 +30,51 @@ main:
 	
 	mov x19, limite	
 	
+	mov x22, -1	//vector movimiento en x
+	mov x23,300
+	mov x24,300
 	
 // ESCENA SCREENSAVER
 
-no_signal:
-	BL NO_SIGNAL
+escenamouse:
+	
+	escena:
+	
+	BL dibujarescritorio
+	mov x10, blanco
+	mov x3, x23
+	mov x4, x24
+	
+
+	cmp x3, 350 
+	B.EQ moverderizq
+
+	cmp x3, 250
+	B.EQ moverderizq
+
+	add x3, x3, x22
+	
+		
+	BL Pixeldir
+	Bl dibujarcursor
+	/*Almacena posicion */
+	mov x23, x3
+	mov x24, x4
+	
+	BL DELAY
+	
+	b escena
+
+moverderizq:
+	mov x13, 0
+	sub x22, x13, x22
+	B quieto
+
+quieto:
+	BL DELAY
+	BL Pixeldir
+	Bl dibujarcursor
+	
 		
 
 
@@ -108,7 +150,7 @@ mov_y:
 
 	sub x19, x19, 1
 	cmp x19, 0
-	B.EQ no_signal
+	B.EQ escena
 	
 	BL DELAY
 	
